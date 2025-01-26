@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WishListController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,13 @@ Route::get('search-products', [ProductController::class, 'search']);
 Route::get('comments/{productId}', [CommentController::class, 'fetch']);
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('add-order', [OrderController::class, 'store']);
+    Route::get('get-orders', [OrderController::class, 'fetchAllOrders']);
+    Route::post('get-order', [OrderController::class, 'fetchOneOrder']);
+    Route::post('cancel-order', [OrderController::class, 'cancel']);
+    Route::post('update-order', [OrderController::class, 'update']);
+
     Route::prefix('customer')->group(function () {
         Route::get('profile', function (Request $request) {
             return $request->user();

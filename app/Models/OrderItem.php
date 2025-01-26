@@ -13,6 +13,9 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'quantity',
+        'discount',
+        'size',
+        'color',
         'price',
         'total_price',
     ];
@@ -28,10 +31,12 @@ class OrderItem extends Model
     /**
      * Get the product associated with the order item.
      */
+
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

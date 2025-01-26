@@ -8,31 +8,54 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id(); // Primary key
-            $table->foreignId('customer_id')->constrained()->onDelete('cascade'); // Foreign key for user
-            $table->string('status')->default('pending'); // Order status (e.g., pending, completed, canceled)
-            $table->string('payment_method'); // Payment method (e.g., card, PayPal)
-            $table->string('transaction_id')->nullable(); // Payment transaction ID (optional)
-            $table->decimal('total_amount', 10, 2); // Total order amount
+            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade'); // Foreign key to customers table
+            $table->enum('status', ['delivered', 'approved', 'pending', 'shipping', 'cancelled'])->default('pending'); // Status of the order
+            $table->enum('payment_status', ['paid', 'unpaid', 'refunded'])->default('unpaid'); // Payment status of the order
+            $table->string('currency')->default('$'); // Currency for the order
             $table->decimal('shipping_cost', 8, 2)->default(0); // Shipping cost
-            $table->string('currency', 3)->default('USD'); // Currency code (e.g., USD, EUR)
-            $table->string('shipping_address'); // Full shipping address
-            $table->string('billing_address')->nullable(); // Full billing address (optional)
-            $table->string('tracking_number')->nullable(); // Tracking number for shipments
-            $table->timestamp('shipped_at')->nullable(); // Shipment date
-            $table->timestamp('delivered_at')->nullable(); // Delivery date
-            $table->timestamps(); // Automatically creates 'created_at' and 'updated_at'
+
+            // Order address fields
+            $table->string('order_email')->nullable();
+            $table->string('order_first_name')->nullable();
+            $table->string('order_last_name')->nullable();
+            $table->string('order_street_address')->nullable();
+            $table->string('order_house_number_and_street_name')->nullable();
+            $table->string('order_apartment_details')->nullable();
+            $table->string('order_city')->nullable();
+            $table->string('order_state')->nullable();
+            $table->string('order_zip')->nullable();
+            $table->string('order_phone')->nullable();
+            $table->text('order_notes')->nullable();
+
+            // Billing address fields
+            $table->string('billing_email')->nullable();
+            $table->string('billing_first_name')->nullable();
+            $table->string('billing_last_name')->nullable();
+            $table->string('billing_street_address')->nullable();
+            $table->string('billing_house_number_and_street_name')->nullable();
+            $table->string('billing_apartment_details')->nullable();
+            $table->string('billing_city')->nullable();
+            $table->string('billing_state')->nullable();
+            $table->string('billing_zip')->nullable();
+            $table->string('billing_phone')->nullable();
+
+            $table->timestamps(); // Created at and updated at
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('orders');
     }

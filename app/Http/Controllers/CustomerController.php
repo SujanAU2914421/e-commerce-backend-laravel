@@ -51,11 +51,11 @@ class CustomerController extends Controller // Changed to CustomerController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
             'email' => 'required|email|unique:customers,email', // Changed to customers table
             'password' => 'required|min:6',
         ], [
-            'name.required' => 'The name field is mandatory.',
+            'username.required' => 'The username field is mandatory.',
             'email.required' => 'Please enter a valid email address.',
             'password.required' => 'Password is required and must be at least 6 characters.',
         ]);
@@ -70,7 +70,7 @@ class CustomerController extends Controller // Changed to CustomerController
             $validated = $validator->validated();
 
             $customer = Customer::create([ // Changed to Customer model
-                'username' => $validated['name'],
+                'username' => $validated['username'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
             ]);
@@ -135,11 +135,13 @@ class CustomerController extends Controller // Changed to CustomerController
             });
 
             return response()->json([
+                "status" => 200,
                 'message' => 'Customer logged out successfully', // Changed to customer
             ], 200);
         }
 
         return response()->json([
+            'status' => 400,
             'message' => 'No token provided',
         ], 400);
     }
